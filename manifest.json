@@ -1,0 +1,40 @@
+{
+  "manifest_version": 3,
+  "name": "Amazon Product Exporter",
+  "version": "0.1.0",
+  "description": "Scrape Amazon product data and export to API or CSV.",
+  "permissions": [
+    "storage",
+    "tabs",
+    "scripting",
+    "downloads",
+    "sidePanel"
+  ],
+  "host_permissions": [
+    "https://www.amazon.com/*",
+    "https://smile.amazon.com/*",
+    "https://www.amazon.co.uk/*",
+    "https://www.amazon.de/*",
+    "https://www.amazon.fr/*",
+    "https://www.amazon.it/*",
+    "https://www.amazon.es/*",
+    "https://www.amazon.ca/*",
+    "https://www.amazon.com.tr/*",
+    "https://www.amazon.ae/*",
+    "https://www.amazon.in/*",
+    "https://www.amazon.com.au/*",
+    "https://www.amazon.co.jp/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Amazon Exporter - Side Panel'i Aç"
+  },
+  "options_page": "options.html",
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  }
+}
+

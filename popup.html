@@ -1,0 +1,406 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Amazon Ürün Aktarıcı</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="popup.css" />
+  <script type="module" src="popup.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      margin: 0; 
+      padding: 20px; 
+      width: 400px; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #1a202c;
+      min-height: 600px;
+    }
+    
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    h1 { 
+      font-size: 24px; 
+      font-weight: 700; 
+      margin: 0 0 20px; 
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .title-icon {
+      font-size: 28px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .section {
+      margin-bottom: 20px;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .section-title { 
+      font-size: 14px; 
+      font-weight: 600;
+      color: #4a5568; 
+      margin: 0 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .section-icon {
+      font-size: 16px;
+      opacity: 0.8;
+    }
+    
+    .row { 
+      display: flex; 
+      gap: 12px; 
+      margin-bottom: 12px; 
+      align-items: center; 
+    }
+    
+    .row label { 
+      min-width: 120px; 
+      font-size: 13px; 
+      font-weight: 500;
+      color: #2d3748; 
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .label-icon {
+      font-size: 14px;
+      opacity: 0.7;
+    }
+    
+    .row input, .row select { 
+      flex: 1; 
+      padding: 12px 14px; 
+      font-size: 13px; 
+      border: 2px solid #e2e8f0; 
+      border-radius: 10px; 
+      background: rgba(255, 255, 255, 0.8);
+      color: #2d3748;
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+    
+    .row input:focus, .row select:focus {
+      outline: none;
+      border-color: #667eea;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .row input[type="checkbox"] { 
+      flex: 0; 
+      width: 20px; 
+      height: 20px;
+      accent-color: #667eea;
+    }
+    
+    .progress-section {
+      margin: 20px 0;
+    }
+    
+    .progress { 
+      background: rgba(226, 232, 240, 0.6);
+      border-radius: 12px; 
+      height: 12px; 
+      overflow: hidden;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .progress-inner { 
+      background: linear-gradient(90deg, #667eea, #764ba2); 
+      height: 100%; 
+      width: 0%; 
+      transition: width 0.3s ease;
+      border-radius: 12px;
+    }
+    
+    .status-line { 
+      display: flex; 
+      justify-content: space-between; 
+      font-size: 12px; 
+      font-weight: 500;
+      color: #4a5568; 
+      margin-top: 8px; 
+    }
+    
+    .btn { 
+      width: 100%; 
+      padding: 16px; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+      color: #fff; 
+      border: 0; 
+      border-radius: 12px; 
+      cursor: pointer; 
+      margin-top: 16px; 
+      font-weight: 600;
+      font-size: 15px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+    
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+    
+    .btn:disabled { 
+      opacity: 0.6; 
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+    }
+    
+    .logs { 
+      margin-top: 16px; 
+      background: rgba(248, 250, 252, 0.8);
+      border: 2px solid rgba(226, 232, 240, 0.5);
+      border-radius: 12px; 
+      padding: 16px; 
+      height: 140px; 
+      overflow: auto; 
+      font-family: 'Courier New', monospace; 
+      font-size: 11px; 
+      color: #2d3748;
+      scrollbar-width: thin;
+      scrollbar-color: #cbd5e0 transparent;
+    }
+    
+    .logs::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .logs::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    .logs::-webkit-scrollbar-thumb {
+      background: #cbd5e0;
+      border-radius: 3px;
+    }
+    
+    /* Dark mode */
+    @media (prefers-color-scheme: dark) {
+      body { 
+        background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+        color: #e2e8f0;
+      }
+      
+      .container {
+        background: rgba(26, 32, 44, 0.95);
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+      
+      .section {
+        background: rgba(45, 55, 72, 0.5);
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+      
+      .section-title, .row label {
+        color: #e2e8f0;
+      }
+      
+      .row input, .row select { 
+        background: rgba(45, 55, 72, 0.8);
+        color: #e2e8f0; 
+        border-color: #4a5568;
+      }
+      
+      .row input:focus, .row select:focus {
+        border-color: #667eea;
+        background: rgba(45, 55, 72, 0.95);
+      }
+      
+      .status-line {
+        color: #cbd5e0;
+      }
+      
+      .progress { 
+        background: rgba(74, 85, 104, 0.6);
+      }
+      
+      .logs { 
+        background: rgba(26, 32, 44, 0.8);
+        border-color: rgba(74, 85, 104, 0.5);
+        color: #e2e8f0;
+      }
+    }
+    
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .container {
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .section {
+      animation: fadeIn 0.4s ease;
+    }
+  </style>
+  </head>
+<body>
+  <div class="container">
+    <h1>
+      <span class="title-icon">🛒</span>
+      Amazon Ürün Aktarıcı
+    </h1>
+
+    <div class="section">
+      <div class="section-title">
+        <span class="section-icon">🔍</span>
+        Arama Kriterleri
+      </div>
+      <div class="row">
+        <label><span class="label-icon">🔎</span>Anahtar kelime</label>
+        <input id="keyword" placeholder="ör. kablosuz mouse" />
+      </div>
+      <div class="row">
+        <label><span class="label-icon">🌍</span>Pazar</label>
+        <select id="market">
+          <option value="www.amazon.com">🇺🇸 ABD (.com)</option>
+          <option value="www.amazon.co.uk">🇬🇧 Birleşik Krallık (.co.uk)</option>
+          <option value="www.amazon.de">🇩🇪 Almanya (.de)</option>
+          <option value="www.amazon.fr">🇫🇷 Fransa (.fr)</option>
+          <option value="www.amazon.it">🇮🇹 İtalya (.it)</option>
+          <option value="www.amazon.es">🇪🇸 İspanya (.es)</option>
+          <option value="www.amazon.ca">🇨🇦 Kanada (.ca)</option>
+          <option value="www.amazon.com.tr">🇹🇷 Türkiye (.com.tr)</option>
+          <option value="www.amazon.ae">🇦🇪 BAE (.ae)</option>
+          <option value="www.amazon.in">🇮🇳 Hindistan (.in)</option>
+          <option value="www.amazon.com.au">🇦🇺 Avustralya (.com.au)</option>
+          <option value="www.amazon.co.jp">🇯🇵 Japonya (.co.jp)</option>
+        </select>
+      </div>
+      <div class="row">
+        <label><span class="label-icon">📦</span>Kategori</label>
+        <select id="category">
+          <option value="aps">📋 Tümü</option>
+          <option value="electronics">💻 Elektronik</option>
+          <option value="fashion">👕 Moda</option>
+          <option value="toys-and-games">🧸 Oyuncak</option>
+          <option value="garden">🌱 Bahçe</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">
+        <span class="section-icon">💰</span>
+        Fiyat ve Filtreler
+      </div>
+      <div class="row">
+        <label><span class="label-icon">💵</span>Fiyat min</label>
+        <input id="minPrice" type="number" step="0.01" placeholder="0" />
+      </div>
+      <div class="row">
+        <label><span class="label-icon">💸</span>Fiyat max</label>
+        <input id="maxPrice" type="number" step="0.01" placeholder="∞" />
+      </div>
+      <div class="row">
+        <label><span class="label-icon">⭐</span>Sadece Prime</label>
+        <input id="primeOnly" type="checkbox" />
+      </div>
+      <div class="row">
+        <label><span class="label-icon">🚫</span>Prime hariç</label>
+        <input id="nonPrimeOnly" type="checkbox" />
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">
+        <span class="section-icon">⚙️</span>
+        Performans Ayarları
+      </div>
+      <div class="row">
+        <label><span class="label-icon">📄</span>Sayfa sınırı</label>
+        <input id="maxPages" type="number" placeholder="3" />
+      </div>
+      <div class="row">
+        <label><span class="label-icon">📊</span>Ürün sınırı</label>
+        <input id="maxProducts" type="number" placeholder="50" />
+      </div>
+      <div class="row">
+        <label><span class="label-icon">⏱️</span>Bekleme (ms)</label>
+        <input id="rateLimitMs" type="number" placeholder="1000" min="0" />
+      </div>
+      <div class="row">
+        <label><span class="label-icon">🗂️</span>Eşzamanlı tab</label>
+        <input id="maxConcurrent" type="number" placeholder="3" min="1" max="8" />
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">
+        <span class="section-icon">📤</span>
+        Dışa Aktarım
+      </div>
+      <div class="row">
+        <label><span class="label-icon">💾</span>Format</label>
+        <select id="exportMode">
+          <option value="CSV">📊 CSV Dosyası</option>
+          <option value="API">🔗 API Entegrasyonu</option>
+        </select>
+      </div>
+      <div class="row" id="apiRow" style="display:none">
+        <label><span class="label-icon">🌐</span>API URL</label>
+        <input id="apiUrl" placeholder="https://panel.example.com/api/products" />
+      </div>
+      <div class="row" id="tokenRow" style="display:none">
+        <label><span class="label-icon">🔑</span>API Jetonu</label>
+        <input id="apiToken" placeholder="Bearer ..." />
+      </div>
+    </div>
+
+    <div class="section progress-section">
+      <div class="section-title">
+        <span class="section-icon">📈</span>
+        İlerleme Durumu
+      </div>
+      <div class="progress"><div id="progressInner" class="progress-inner"></div></div>
+      <div class="status-line">
+        <div id="statusStage">Hazır</div>
+        <div><span id="statusCurrent">0</span>/<span id="statusTotal">0</span></div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 8px; margin-top: 16px;">
+      <button id="openSidePanel" class="btn" style="flex: 1; background: linear-gradient(135deg, #22c55e, #16a34a);">📌 Side Panel'i Aç</button>
+      <button id="start" class="btn" style="flex: 2;">🚀 Taramayı Başlat</button>
+    </div>
+    
+    <div class="logs" id="logs"></div>
+  </div>
+</body>
+</html>
+

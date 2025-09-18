@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Amazon Exporter Options</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 16px; max-width: 720px; }
+    h1 { font-size: 18px; }
+    label { display: block; margin-top: 12px; }
+    input { width: 100%; padding: 8px; }
+    .hint { color: #666; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <h1>Default Settings</h1>
+  <label>Panel API URL
+    <input id="apiUrl" placeholder="https://panel.example.com/api/products" />
+  </label>
+  <label>API Token
+    <input id="apiToken" placeholder="Bearer token" />
+  </label>
+  <p class="hint">Defaults are used when selecting API export in popup.</p>
+  <button id="save">Save</button>
+  <script>
+    const apiUrl = document.getElementById('apiUrl');
+    const apiToken = document.getElementById('apiToken');
+    const save = document.getElementById('save');
+    chrome.storage.sync.get(['defaults']).then(({ defaults }) => {
+      if (!defaults) return;
+      apiUrl.value = defaults.apiUrl || '';
+      apiToken.value = defaults.apiToken || '';
+    });
+    save.addEventListener('click', async () => {
+      await chrome.storage.sync.set({ defaults: { apiUrl: apiUrl.value.trim(), apiToken: apiToken.value.trim() } });
+      alert('Saved');
+    });
+  </script>
+</body>
+</html>
+

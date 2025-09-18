@@ -1,0 +1,569 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Amazon Pro Scraper</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; }
+    body { 
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+      margin: 0; 
+      padding: 0; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    .app-container {
+      padding: 20px;
+      min-height: 100vh;
+    }
+    
+    .main-card {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1), 0 8px 25px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .main-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+      border-radius: 20px 20px 0 0;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+      position: relative;
+    }
+    
+    .app-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 12px;
+      margin: 0 auto 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: white;
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+    
+    h1 { 
+      font-size: 24px; 
+      font-weight: 700; 
+      margin: 0; 
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+    
+    .subtitle {
+      color: #64748b;
+      font-size: 14px;
+      margin-top: 4px;
+      font-weight: 500;
+    }
+    
+    .section {
+      margin-bottom: 28px;
+      position: relative;
+    }
+    
+    .section-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+      gap: 10px;
+    }
+    
+    .section-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: white;
+      font-weight: 600;
+    }
+    
+    .search-icon { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+    .filter-icon { background: linear-gradient(135deg, #10b981, #047857); }
+    .settings-icon { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    .export-icon { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+    .progress-icon { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+    
+    .section-title { 
+      font-size: 16px; 
+      font-weight: 600;
+      color: #1e293b; 
+      margin: 0;
+    }
+    
+    .form-grid {
+      display: grid;
+      gap: 16px;
+    }
+    
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    
+    .checkbox-row {
+      flex-direction: row !important;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .form-label { 
+      font-size: 13px; 
+      font-weight: 600;
+      color: #475569; 
+      margin: 0;
+    }
+    
+    .checkbox-row .form-label {
+      margin-left: 4px;
+      font-weight: 500;
+    }
+    
+    .form-input, .form-select { 
+      width: 100%;
+      padding: 12px 16px; 
+      font-size: 14px; 
+      border: 2px solid #e2e8f0; 
+      border-radius: 12px; 
+      background: #ffffff;
+      color: #334155;
+      font-family: inherit;
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+    
+    .form-input:focus, .form-select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+      transform: translateY(-1px);
+    }
+    
+    .form-input::placeholder {
+      color: #94a3b8;
+      font-weight: 400;
+    }
+    
+    .form-checkbox { 
+      width: 18px; 
+      height: 18px;
+      margin: 0;
+      accent-color: #667eea;
+      cursor: pointer;
+    }
+    
+    .progress-container {
+      background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+      border-radius: 16px;
+      padding: 20px;
+      border: 2px solid #e2e8f0;
+    }
+    
+    .progress-bar { 
+      background: #e2e8f0;
+      border-radius: 12px; 
+      height: 12px; 
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .progress-fill { 
+      background: linear-gradient(90deg, #667eea, #764ba2); 
+      height: 100%; 
+      width: 0%; 
+      transition: width 0.4s ease;
+      border-radius: 12px;
+      position: relative;
+    }
+    
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shimmer 2s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    
+    .status-info { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center;
+      font-size: 13px; 
+      color: #64748b; 
+      margin-top: 12px;
+      font-weight: 600;
+    }
+    
+    .status-badge {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .action-button { 
+      width: 100%; 
+      padding: 16px 24px; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+      color: #ffffff; 
+      border: 0; 
+      border-radius: 16px; 
+      cursor: pointer; 
+      font-size: 16px;
+      font-weight: 700;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+      position: relative;
+      overflow: hidden;
+      margin-top: 24px;
+    }
+    
+    .action-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s ease;
+    }
+    
+    .action-button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+    }
+    
+    .action-button:hover:not(:disabled)::before {
+      left: 100%;
+    }
+    
+    .action-button:disabled { 
+      opacity: 0.7; 
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .logs-container { 
+      margin-top: 20px; 
+      background: linear-gradient(135deg, #1e293b, #334155);
+      border: 2px solid #475569;
+      border-radius: 16px; 
+      padding: 20px; 
+      height: 140px; 
+      overflow: auto; 
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace; 
+      font-size: 12px; 
+      color: #e2e8f0;
+      position: relative;
+    }
+    
+    .logs-container::before {
+      content: '';
+      position: absolute;
+      top: 12px;
+      left: 20px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    .logs-container::after {
+      content: 'LIVE';
+      position: absolute;
+      top: 8px;
+      left: 40px;
+      font-size: 10px;
+      color: #10b981;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+    }
+    
+    .log-content {
+      margin-top: 24px;
+    }
+    
+    .logs-container::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .logs-container::-webkit-scrollbar-track {
+      background: rgba(71, 85, 105, 0.3);
+      border-radius: 4px;
+    }
+    
+    .logs-container::-webkit-scrollbar-thumb {
+      background: #667eea;
+      border-radius: 4px;
+    }
+    
+    .api-fields {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .feature-badge {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+    
+    /* Dark mode */
+    @media (prefers-color-scheme: dark) {
+      .main-card {
+        background: rgba(30, 41, 59, 0.95);
+        color: #e2e8f0;
+      }
+      
+      .section-title, .form-label {
+        color: #e2e8f0;
+      }
+      
+      .form-input, .form-select { 
+        background: #334155;
+        color: #e2e8f0; 
+        border-color: #475569;
+      }
+      
+      .form-input::placeholder {
+        color: #64748b;
+      }
+      
+      .progress-container {
+        background: linear-gradient(135deg, #1e293b, #334155);
+        border-color: #475569;
+      }
+      
+      .progress-bar { 
+        background: #475569;
+      }
+      
+      .subtitle {
+        color: #94a3b8;
+      }
+      
+      .status-info {
+        color: #94a3b8;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <div class="main-card">
+      <div class="feature-badge">PRO</div>
+      
+      <div class="header">
+        <div class="app-icon">🚀</div>
+        <h1>Amazon Pro Scraper</h1>
+        <div class="subtitle">Professional Amazon Data Extraction Tool</div>
+        <div class="language-switcher">
+          <select id="languageSelect" class="form-select" style="max-width: 120px; margin: 12px auto 0; font-size: 12px;">
+            <option value="en">🇺🇸 English</option>
+            <option value="tr">🇹🇷 Türkçe</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section search-section">
+        <div class="section-header">
+          <div class="section-icon search-icon">🔍</div>
+          <div class="section-title">Search Configuration</div>
+        </div>
+        <div class="form-grid">
+          <div class="form-row">
+            <label class="form-label">Search Keywords</label>
+            <input class="form-input" id="keyword" placeholder="e.g. wireless bluetooth headphones" />
+          </div>
+          <div class="form-row">
+            <label class="form-label">Target Market</label>
+            <select class="form-select" id="market">
+              <option value="www.amazon.com">🇺🇸 United States (.com)</option>
+              <option value="www.amazon.co.uk">🇬🇧 United Kingdom (.co.uk)</option>
+              <option value="www.amazon.de">🇩🇪 Germany (.de)</option>
+              <option value="www.amazon.fr">🇫🇷 France (.fr)</option>
+              <option value="www.amazon.it">🇮🇹 Italy (.it)</option>
+              <option value="www.amazon.es">🇪🇸 Spain (.es)</option>
+              <option value="www.amazon.ca">🇨🇦 Canada (.ca)</option>
+              <option value="www.amazon.com.tr">🇹🇷 Turkey (.com.tr)</option>
+              <option value="www.amazon.ae">🇦🇪 UAE (.ae)</option>
+              <option value="www.amazon.in">🇮🇳 India (.in)</option>
+              <option value="www.amazon.com.au">🇦🇺 Australia (.com.au)</option>
+              <option value="www.amazon.co.jp">🇯🇵 Japan (.co.jp)</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label class="form-label">Product Category</label>
+            <select class="form-select" id="category">
+              <option value="aps">🛍️ All Departments</option>
+              <option value="electronics">💻 Electronics</option>
+              <option value="fashion">👕 Fashion</option>
+              <option value="toys-and-games">🎮 Toys & Games</option>
+              <option value="garden">🌱 Garden & Outdoor</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="section filter-section">
+        <div class="section-header">
+          <div class="section-icon filter-icon">⚡</div>
+          <div class="section-title">Smart Filters</div>
+        </div>
+        <div class="form-grid">
+          <div class="form-row">
+            <label class="form-label" id="minPriceLabel">Minimum Price ($)</label>
+            <input class="form-input" id="minPrice" type="number" step="0.01" placeholder="0.00 $" />
+          </div>
+          <div class="form-row">
+            <label class="form-label" id="maxPriceLabel">Maximum Price ($)</label>
+            <input class="form-input" id="maxPrice" type="number" step="0.01" placeholder="No limit" />
+          </div>
+          <div class="form-row checkbox-row">
+            <input class="form-checkbox" id="primeOnly" type="checkbox" />
+            <label class="form-label" for="primeOnly">Prime Products Only</label>
+          </div>
+          <div class="form-row checkbox-row">
+            <input class="form-checkbox" id="nonPrimeOnly" type="checkbox" />
+            <label class="form-label" for="nonPrimeOnly">Exclude Prime Products</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="section settings-section">
+        <div class="section-header">
+          <div class="section-icon settings-icon">⚙️</div>
+          <div class="section-title">Performance Settings</div>
+        </div>
+        <div class="form-grid">
+          <div class="form-row">
+            <label class="form-label">Max Pages to Scan</label>
+            <input class="form-input" id="maxPages" type="number" placeholder="5" min="1" />
+          </div>
+          <div class="form-row">
+            <label class="form-label">Max Products to Extract</label>
+            <input class="form-input" id="maxProducts" type="number" placeholder="100" min="1" />
+          </div>
+          <div class="form-row">
+            <label class="form-label">Delay Between Requests (ms)</label>
+            <input class="form-input" id="rateLimitMs" type="number" placeholder="1000" min="100" />
+          </div>
+          <div class="form-row">
+            <label class="form-label">Concurrent Tabs</label>
+            <input class="form-input" id="maxConcurrent" type="number" placeholder="3" min="1" max="8" />
+          </div>
+        </div>
+      </div>
+
+      <div class="section export-section">
+        <div class="section-header">
+          <div class="section-icon export-icon">📊</div>
+          <div class="section-title">Export Options</div>
+        </div>
+        <div class="form-grid">
+          <div class="form-row">
+            <label class="form-label">Output Format</label>
+            <select class="form-select" id="exportMode">
+              <option value="CSV">📈 CSV Spreadsheet</option>
+              <option value="API">🔗 API Integration</option>
+            </select>
+          </div>
+          <div class="form-row api-fields" id="apiRow">
+            <label class="form-label">API Endpoint URL</label>
+            <input class="form-input" id="apiUrl" placeholder="https://your-api.com/webhook" />
+          </div>
+          <div class="form-row api-fields" id="tokenRow">
+            <label class="form-label">Authorization Token</label>
+            <input class="form-input" id="apiToken" placeholder="Bearer your-api-token..." />
+          </div>
+        </div>
+      </div>
+
+      <div class="section progress-section">
+        <div class="section-header">
+          <div class="section-icon progress-icon">📈</div>
+          <div class="section-title">Live Progress</div>
+        </div>
+        <div class="progress-container">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressInner"></div>
+          </div>
+          <div class="status-info">
+            <div class="status-badge" id="statusStage">Ready to Start</div>
+            <div><span id="statusCurrent">0</span> / <span id="statusTotal">0</span> products</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="action-button" id="start">
+        🚀 Start Professional Extraction
+      </button>
+      
+      <div class="logs-container">
+        <div class="log-content" id="logs"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
