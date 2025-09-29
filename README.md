@@ -1,4 +1,4 @@
-# Amazon Ürün Aktarıcı Chrome Eklentisi
+# Amazon Data Scraper Chrome Eklentisi
 
 Amazon pazaryerlerinden ürün bilgilerini çekip CSV veya API ile kendi panelinize aktaran güçlü Chrome eklentisi.
 
@@ -51,7 +51,7 @@ _Eklenti henüz Chrome Web Mağazası'nda yayınlanmamıştır._
 
 1. **Dosyaları indirin**
    ```bash
-   git clone https://github.com/byiyuel/amazon-product-exporter.git
+   git clone https://github.com/byiyuel/amazon-data-scraper.git
    cd amazon-product-exporter
    ```
 
@@ -196,8 +196,8 @@ amazon-extension/
 
 ```bash
 # Repo'yu klonlayın
-git clone https://github.com/byiyuel/amazon-product-exporter.git
-cd amazon-product-exporter
+git clone https://github.com/byiyuel/amazon-data-scraper.git
+cd amazon-data-scraper
 
 # Chrome'da developer mode ile yükleyin
 # Değişiklik yaptıkça eklentiyi reload edin
@@ -213,8 +213,8 @@ Bu eklenti sadece halka açık verilerle çalışır. Amazon'un [Terms of Servic
 
 ## 📞 Destek
 
-- 🐛 **Bug Report**: [GitHub Issues](https://github.com/byiyuel/amazon-product-exporter/issues)
-- 💡 **Feature Request**: [GitHub Discussions](https://github.com/byiyuel/amazon-product-exporter/discussions)
+- 🐛 **Bug Report**: [GitHub Issues](https://github.com/byiyuel/amazon-data-scraper/issues)
+- 💡 **Feature Request**: [GitHub Discussions](https://github.com/byiyuel/amazon-data-scraper/discussions)
 - 📧 **İletişim**: [baranyucel643@gmail.com](mailto:baranyucel643@gmail.com)
 
 ## 🏆 Katkıda Bulunanlar
@@ -224,5 +224,3 @@ Bu eklenti sadece halka açık verilerle çalışır. Amazon'un [Terms of Servic
 ---
 
 **⭐ Beğendiyseniz yıldız vermeyi unutmayın!**
-
-*Son güncelleme: Eylül 2024*
